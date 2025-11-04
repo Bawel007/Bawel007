@@ -13,6 +13,7 @@
             --light: #ecf0f1;
             --dark: #2c3e50;
             --gray: #95a5a6;
+            --success: #2ecc71;
         }
         
         * {
@@ -207,11 +208,32 @@
             border-radius: 8px;
             padding: 2rem;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--secondary);
+            transform: scaleX(0);
+            transform-origin: left;
             transition: transform 0.3s;
+        }
+        
+        .service-card:hover::before {
+            transform: scaleX(1);
         }
         
         .service-card:hover {
             transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
         
         .service-icon {
@@ -224,6 +246,178 @@
             font-size: 1.5rem;
             margin-bottom: 1rem;
             color: var(--primary);
+        }
+        
+        .service-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--secondary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .service-link:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+        
+        /* Service Notes Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .service-modal {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.4s;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-overlay.active .service-modal {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .modal-header {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .close-modal:hover {
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .service-detail {
+            margin-bottom: 2rem;
+        }
+        
+        .service-detail h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .service-detail h3 i {
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+        
+        .service-detail p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .tech-tag {
+            background: var(--light);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--primary);
+        }
+        
+        .pricing-info {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .pricing-info h4 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .currency {
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        
+        .email-link {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .email-link:hover {
+            color: var(--primary);
+            text-decoration: underline;
         }
         
         /* Contact Section */
@@ -411,6 +605,10 @@
             .hero h1 {
                 font-size: 2.5rem;
             }
+            
+            .modal-body {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -476,37 +674,54 @@
                 <p>Comprehensive IT solutions tailored to meet your specific business needs.</p>
             </div>
             <div class="services-grid">
-                <div class="service-card">
+                <div class="service-card" data-service="software">
                     <div class="service-icon">
                         <i class="fas fa-code"></i>
                     </div>
                     <h3>Software Solutions and Installations</h3>
                     <p>Custom software development and seamless installation services to enhance your business operations.</p>
+                    <a href="#" class="service-link">View Details →</a>
                 </div>
-                <div class="service-card">
+                <div class="service-card" data-service="helpdesk">
                     <div class="service-icon">
                         <i class="fas fa-headset"></i>
                     </div>
                     <h3>Help Desk Services</h3>
                     <p>Round-the-clock technical support to resolve your IT issues quickly and efficiently.</p>
+                    <a href="#" class="service-link">View Details →</a>
                 </div>
-                <div class="service-card">
+                <div class="service-card" data-service="qa">
                     <div class="service-icon">
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <h3>Quality Assurance and Software Testing</h3>
                     <p>Comprehensive testing services to ensure your software performs flawlessly in all scenarios.</p>
+                    <a href="#" class="service-link">View Details →</a>
                 </div>
-                <div class="service-card">
+                <div class="service-card" data-service="security">
                     <div class="service-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
                     <h3>Cyber Security and Cloud Computing</h3>
                     <p>Robust security solutions and cloud services to protect your data and streamline operations.</p>
+                    <a href="#" class="service-link">View Details →</a>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Service Notes Modal -->
+    <div class="modal-overlay" id="serviceModal">
+        <div class="service-modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Service Details</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalContent">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
 
     <!-- Contact Section -->
     <section class="contact" id="contact">
@@ -524,8 +739,8 @@
                             <i class="fas fa-envelope"></i>
                             <div>
                                 <h4>Email</h4>
-                                <p>techwithus@gmail.com</p>
-                                <p>twu@info.com</p>
+                                <p><a href="mailto:techwithust@gmail.com" class="email-link">techwithust@gmail.com</a></p>
+                                <p><small>Official Company Email</small></p>
                             </div>
                         </div>
                         <div class="contact-detail">
@@ -575,6 +790,7 @@
                 <div class="footer-about">
                     <div class="footer-logo">TechWithUs</div>
                     <p>Providing remote IT support services to alleviate your technology pain points.</p>
+                    <p><strong>Official Email:</strong> <a href="mailto:techwithust@gmail.com" class="email-link">techwithust@gmail.com</a></p>
                 </div>
                 <div class="footer-links">
                     <h4>Quick Links</h4>
@@ -588,27 +804,88 @@
                 <div class="footer-links">
                     <h4>Services</h4>
                     <ul>
-                        <li><a href="#">Software Solutions</a></li>
-                        <li><a href="#">Help Desk</a></li>
-                        <li><a href="#">Quality Assurance</a></li>
-                        <li><a href="#">Cyber Security</a></li>
+                        <li><a href="#" data-service-link="software">Software Solutions</a></li>
+                        <li><a href="#" data-service-link="helpdesk">Help Desk</a></li>
+                        <li><a href="#" data-service-link="qa">Quality Assurance</a></li>
+                        <li><a href="#" data-service-link="security">Cyber Security</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
                     <h4>Contact Info</h4>
                     <ul>
-                        <li><i class="fas fa-envelope"></i> techwithus@gmail.com</li>
+                        <li><i class="fas fa-envelope"></i> <a href="mailto:techwithust@gmail.com" class="email-link">techwithust@gmail.com</a></li>
                         <li><i class="fas fa-phone"></i> +233501581100</li>
+                        <li><small>Official Company Email</small></li>
                     </ul>
                 </div>
             </div>
             <div class="copyright">
-                <p>&copy; 2023 TechWithUs. All rights reserved.</p>
+                <p>&copy; 2023 TechWithUs. All rights reserved. | Official Email: <a href="mailto:techwithust@gmail.com" class="email-link">techwithust@gmail.com</a></p>
             </div>
         </div>
     </footer>
 
     <script>
+        // Service details data with Ghanaian Cedis pricing
+        const serviceDetails = {
+            software: {
+                title: "Software Solutions & Installations",
+                description: "We provide end-to-end software development and deployment services tailored to your business needs.",
+                details: [
+                    "Custom application development using modern frameworks and technologies",
+                    "Seamless software installation and configuration",
+                    "Integration with existing systems and databases",
+                    "Ongoing maintenance and support services",
+                    "User training and documentation"
+                ],
+                techStack: ["JavaScript", "Python", "Java", "React", "Node.js", "SQL", "NoSQL"],
+                pricing: "Starting at <span class='currency'>GHS 18,000</span> for basic applications, with custom quotes for enterprise solutions.",
+                contact: "Email us at <a href='mailto:techwithust@gmail.com' class='email-link'>techwithust@gmail.com</a> for a detailed quote."
+            },
+            helpdesk: {
+                title: "Help Desk Services",
+                description: "Our 24/7 help desk ensures your technology works when you need it most.",
+                details: [
+                    "24/7 technical support via phone, email, and chat",
+                    "Remote desktop assistance for quick problem resolution",
+                    "Hardware and software troubleshooting",
+                    "User account management and password resets",
+                    "Incident tracking and resolution reporting"
+                ],
+                techStack: ["Zendesk", "Jira", "Remote Desktop", "Active Directory", "Office 365"],
+                pricing: "Plans start at <span class='currency'>GHS 1,200/month</span> for small businesses with scalable options for larger organizations.",
+                contact: "Contact us at <a href='mailto:techwithust@gmail.com' class='email-link'>techwithust@gmail.com</a> to discuss your support needs."
+            },
+            qa: {
+                title: "Quality Assurance & Software Testing",
+                description: "Ensure your software meets the highest quality standards with our comprehensive testing services.",
+                details: [
+                    "Functional testing to verify all features work as expected",
+                    "Performance testing to ensure speed and scalability",
+                    "Security testing to identify vulnerabilities",
+                    "User acceptance testing with real-world scenarios",
+                    "Automated testing for continuous integration"
+                ],
+                techStack: ["Selenium", "Jest", "Cypress", "JMeter", "Postman", "Appium"],
+                pricing: "Project-based pricing starting at <span class='currency'>GHS 24,000</span>, with ongoing testing plans available.",
+                contact: "Get a testing quote by emailing <a href='mailto:techwithust@gmail.com' class='email-link'>techwithust@gmail.com</a>."
+            },
+            security: {
+                title: "Cyber Security & Cloud Computing",
+                description: "Protect your digital assets with our advanced security solutions and scalable cloud infrastructure.",
+                details: [
+                    "Network security assessment and hardening",
+                    "Cloud infrastructure setup and migration",
+                    "Data encryption and backup solutions",
+                    "Security monitoring and threat detection",
+                    "Compliance auditing (GDPR, HIPAA, PCI-DSS)"
+                ],
+                techStack: ["AWS", "Azure", "Firewalls", "VPN", "Encryption", "SIEM"],
+                pricing: "Security assessments from <span class='currency'>GHS 18,000</span>. Cloud solutions priced based on usage and requirements.",
+                contact: "Secure your business today - email <a href='mailto:techwithust@gmail.com' class='email-link'>techwithust@gmail.com</a>"
+            }
+        };
+
         // Mobile Menu Toggle
         document.querySelector('.mobile-menu').addEventListener('click', function() {
             document.querySelector('nav ul').classList.toggle('show');
@@ -638,8 +915,98 @@
         // Contact Form Submission
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Thank you for your message! We will get back to you soon.');
+            alert('Thank you for your message! We will get back to you soon at techwithust@gmail.com.');
             this.reset();
+        });
+
+        // Service Modal Functionality
+        const modal = document.getElementById('serviceModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const closeModal = document.querySelector('.close-modal');
+
+        // Function to open modal with service details
+        function openServiceModal(serviceId) {
+            const service = serviceDetails[serviceId];
+            if (!service) return;
+            
+            modalTitle.textContent = service.title;
+            
+            let contentHTML = `
+                <div class="service-detail">
+                    <p>${service.description}</p>
+                    
+                    <h3><i class="fas fa-list-check"></i> Key Features</h3>
+                    <ul class="feature-list">
+            `;
+            
+            service.details.forEach(detail => {
+                contentHTML += `<li>${detail}</li>`;
+            });
+            
+            contentHTML += `
+                    </ul>
+                    
+                    <h3><i class="fas fa-gears"></i> Technologies We Use</h3>
+                    <div class="tech-stack">
+            `;
+            
+            service.techStack.forEach(tech => {
+                contentHTML += `<span class="tech-tag">${tech}</span>`;
+            });
+            
+            contentHTML += `
+                    </div>
+                    
+                    <div class="pricing-info">
+                        <h4><i class="fas fa-tag"></i> Pricing Information</h4>
+                        <p>${service.pricing}</p>
+                        <p><strong>Contact Us:</strong> ${service.contact}</p>
+                    </div>
+                </div>
+            `;
+            
+            modalContent.innerHTML = contentHTML;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal function
+        function closeServiceModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Event listeners for service cards
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const serviceId = this.getAttribute('data-service');
+                openServiceModal(serviceId);
+            });
+        });
+
+        // Event listeners for service links in footer
+        document.querySelectorAll('[data-service-link]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const serviceId = this.getAttribute('data-service-link');
+                openServiceModal(serviceId);
+            });
+        });
+
+        // Close modal events
+        closeModal.addEventListener('click', closeServiceModal);
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeServiceModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeServiceModal();
+            }
         });
     </script>
 </body>
