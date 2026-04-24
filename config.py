@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    SQLALCHEMY_DATABASE_URI = os.getenv("postgresql://postgres:BIG_boss.1997@db.nxzgykyzgcrpafflwaqu.supabase.co:5432/postgres"
+    SQLALCHEMY_DATABASE_URI = os.getenv('postgresql://postgres:BIG_boss.1997@db.nxzgykyzgcrpafflwaqu.supabase.co:5432/postgres'
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
