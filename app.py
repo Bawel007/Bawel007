@@ -4,6 +4,10 @@ from flask_cors import CORS
 from config import Config
 from models import db
 from routes import auth_bp, cases_bp, debtors_bp, debtor_portal_bp
+from auth_routes import auth_bp
+from case_routes import cases_bp
+from debtor_routes import debtors_bp
+from portal_routes import debtor_portal_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
