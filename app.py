@@ -18,11 +18,6 @@ app.register_blueprint(cases_bp)
 app.register_blueprint(debtors_bp)
 app.register_blueprint(debtor_portal_bp)
 
-@app.before_request
-def create_tables():
-    with app.app_context():
-        db.create_all()
-
 @app.route('/health', methods=['GET'])
 def health():
     return {'status': 'ok'}, 200
